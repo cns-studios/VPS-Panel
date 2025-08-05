@@ -1,11 +1,11 @@
 # VPS Management Panel
 
-![Dashboard Screenshot](https://i.imgur.com/YOUR_SCREENSHOT_URL.png) <!-- TODO: Add a real screenshot -->
+![Dashboard Screenshot](https://i.imgur.com/9d4AVo9.png)
 
 A simple, self-hosted, web-based panel to manage virtual private servers (VPS) running in Docker containers. This project provides a user-friendly interface to create, manage, and connect to your containerized environments, inspired by the functionality of services like Hostinger.
 
 This repository contains two versions of the application, tailored for different host operating systems:
--   **`vps-management-panel/`**: For Linux hosts.
+-   **`Linux/`**: For Linux hosts.
 -   **`Windows/`**: For Windows hosts using Docker Desktop.
 
 ---
@@ -36,7 +36,7 @@ Please follow the instructions for your host operating system.
 
 ### For Linux Users
 
-All the necessary files are located in the `vps-management-panel/` directory.
+All the necessary files are located in the `Linux/` directory.
 
 **1. Configure Docker Permissions (Crucial Step)**
 
@@ -47,9 +47,9 @@ The backend service needs permission to communicate with the Docker engine. You 
     getent group docker
     ```
 -   This will output something like `docker:x:969:your_username`. The number (e.g., `969`) is your Docker GID.
--   Open the `vps-management-panel/docker-compose.yml` file. Find the `group_add` section and replace the default value with **your** GID.
+-   Open the `Linux/docker-compose.yml` file. Find the `group_add` section and replace the default value with **your** GID.
     ```yaml
-    # In vps-management-panel/docker-compose.yml
+    # In Linux/docker-compose.yml
     group_add:
       - "969" # <-- IMPORTANT: Replace 969 with your Docker GID
     ```
@@ -59,7 +59,7 @@ The backend service needs permission to communicate with the Docker engine. You 
 Navigate to the Linux project directory and run the provided build script. This will build all necessary images.
 
 ```bash
-cd vps-management-panel
+cd Linux
 chmod +x build.sh
 ./build.sh
 ```
