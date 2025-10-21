@@ -70,10 +70,9 @@ A build script is provided to build all necessary images.
     ```
 -   **On Windows (Command Prompt or PowerShell):**
     ```cmd
-    .\build.bat
+    build.bat
     ```
 
-*Note: The Windows `build.bat` is a placeholder. You will need to create this file or follow the manual build steps.*
 
 ### Step 3: Start the Application
 
