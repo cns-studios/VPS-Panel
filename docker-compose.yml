@@ -1,0 +1,25 @@
+services:
+  backend:
+    build: ./backend
+    image: vps-management-backend
+    ports:
+      - "3001:3001"
+    # This volume mount is required to allow the backend to communicate with the Docker daemon.
+    # On Linux, this path is correct.
+    # On Windows with Docker Desktop, this path is also correct as it handles the translation.
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # --- IMPORTANT ---
+    # For Linux users, you MUST uncomment the 'group_add' section below.
+    # This gives the container permission to access the Docker socket.
+    # Find your Docker group ID by running: `getent group docker`
+    # Then, replace 'YOUR_DOCKER_GID' with that number.
+    # group_add:
+    #   - "YOUR_DOCKER_GID"
+  frontend:
+    build: ./frontend
+    image: vps-management-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
