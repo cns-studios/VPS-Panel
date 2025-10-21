@@ -1,7 +1,7 @@
 const express = require('express');
 const Docker = require('dockerode');
 const cors = require('cors');
-// Test
+
 const app = express();
 const port = 3001;
 // This will connect to the Docker daemon socket
@@ -80,6 +80,24 @@ app.post('/api/vps/:id/:action', handleAsync(async (req, res) => {
             return;
     }
     console.log(`Action '${action}' completed for container ${id}`);
+}));
+
+// Delete a VPS
+app.delete('/api/vps/:id', handleAsync(async (req, res) => {
+    const { id } = req.params;
+    console.log(`Delete requested for container ${id}`);
+    const container = docker.getContainer(id);
+    try {
+        await container.stop(); // Ensure the container is stopped before removal
+    } catch (error) {
+        // If the container is already stopped, Docker throws a 304 error, which we can ignore.
+        if (error.statusCode !== 304) {
+            throw error; // Re-throw other errors
+        }
+    }
+    await container.remove();
+    console.log(`Container ${id} removed successfully.`);
+    res.json({ message: 'VPS deleted successfully' });
 }));
 
 app.listen(port, () => {

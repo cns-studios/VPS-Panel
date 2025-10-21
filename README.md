@@ -4,20 +4,16 @@
 
 A simple, self-hosted, web-based panel to manage virtual private servers (VPS) running in Docker containers. This project provides a user-friendly interface to create, manage, and connect to your containerized environments, inspired by the functionality of services like Hostinger.
 
-This repository contains two versions of the application, tailored for different host operating systems:
--   **`Linux/`**: For Linux hosts.
--   **`Windows/`**: For Windows hosts using Docker Desktop.
-
 ---
 
 ## Features
 
 -   **Web-based Dashboard:** View and manage all your VPS instances from a clean web interface.
 -   **One-Click Creation:** Create new, SSH-enabled VPS instances with a single click.
--   **Lifecycle Management:** Start, stop, and restart VPS containers directly from the dashboard.
+-   **Lifecycle Management:** Start, stop, restart, and delete VPS containers directly from the dashboard.
 -   **Secure SSH Access:** Each VPS gets a unique, automatically assigned port for secure SSH connections.
 -   **Easy Setup:** Uses Docker Compose and simple build scripts for a streamlined setup process.
--   **Cross-Platform:** Includes dedicated setup instructions for both Linux and Windows.
+-   **Cross-Platform:** Clear setup instructions for both Linux and Windows.
 
 ---
 
@@ -32,39 +28,54 @@ This repository contains two versions of the application, tailored for different
 
 ## Installation
 
-Please follow the instructions for your host operating system.
+Follow these steps to get the project running on your local machine.
 
-### For Linux Users
+### Prerequisites
 
-All the necessary files are located in the `Linux/` directory.
+-   **Docker:** You must have Docker installed and running.
+    -   On **Linux**, follow the [official installation guide](https://docs.docker.com/engine/install/).
+    -   On **Windows**, install [Docker Desktop](https://docs.docker.com/desktop/install/windows-install/).
+-   **Docker Compose:** Included with Docker Desktop. Linux users may need to [install it separately](https://docs.docker.com/compose/install/).
 
-**1. Configure Docker Permissions (Crucial Step)**
+### Step 1: Platform-Specific Configuration
 
-The backend service needs permission to communicate with the Docker engine. You must give the container the correct group ID.
+**For Linux Users:**
 
--   Find the Group ID (GID) of the `docker` group on your system:
+The backend service needs permission to communicate with the Docker engine. You must provide your Docker group's Group ID (GID) to the container.
+
+1.  Find your Docker GID by running:
     ```bash
     getent group docker
     ```
--   This will output something like `docker:x:969:your_username`. The number (e.g., `969`) is your Docker GID.
--   Open the `Linux/docker-compose.yml` file. Find the `group_add` section and replace the default value with **your** GID.
+2.  This will output something like `docker:x:969:your_username`. The number (e.g., `969`) is your GID.
+3.  Open the `docker-compose.yml` file. Find the `group_add` section and uncomment it, replacing `"YOUR_DOCKER_GID"` with your actual GID.
     ```yaml
-    # In Linux/docker-compose.yml
-    group_add:
-      - "969" # <-- IMPORTANT: Replace 969 with your Docker GID
+    # In docker-compose.yml
+    # group_add:
+    #   - "YOUR_DOCKER_GID" # <-- Uncomment and replace with your GID
     ```
 
-**2. Build the Docker Images**
+**For Windows Users:**
 
-Navigate to the Linux project directory and run the provided build script. This will build all necessary images.
+No special configuration is needed. Docker Desktop handles the connection to the Docker daemon automatically.
 
-```bash
-cd Linux
-chmod +x build.sh
-./build.sh
-```
+### Step 2: Build the Docker Images
 
-**3. Start the Application**
+A build script is provided to build all necessary images.
+
+-   **On Linux:**
+    ```bash
+    chmod +x build.sh
+    ./build.sh
+    ```
+-   **On Windows (Command Prompt or PowerShell):**
+    ```cmd
+    .\build.bat
+    ```
+
+*Note: The Windows `build.bat` is a placeholder. You will need to create this file or follow the manual build steps.*
+
+### Step 3: Start the Application
 
 Once the images are built, start the services using Docker Compose:
 
@@ -72,43 +83,15 @@ Once the images are built, start the services using Docker Compose:
 docker compose up
 ```
 
-### For Windows Users
-
-All the necessary files are located in the `Windows/` directory.
-
-**1. Prerequisites**
-
--   Ensure you have **Docker Desktop for Windows** installed and running, preferably using the WSL 2 backend.
-
-**2. Build the Docker Images**
-
-Navigate to the Windows project directory and run the provided build script. This will build all necessary images.
-
-```cmd
-cd Windows
-.\build.bat
-```
-
-**3. Start the Application**
-
-Once the images are built, start the services using Docker Compose:
-
-```cmd
-docker-compose up
-```
+Add the `-d` flag to run the containers in the background (detached mode).
 
 ---
 
 ## Usage
 
-Once the application is running, regardless of your OS:
-
 1.  **Access the Web Panel:** Open your web browser and navigate to **[http://localhost:3000](http://localhost:3000)**.
-
 2.  **Create a VPS:** Click the "+ Create New VPS" button.
-
-3.  **Manage a VPS:** Use the Start, Stop, and Restart buttons for each instance.
-
+3.  **Manage a VPS:** Use the Start, Stop, Restart, and Delete buttons for each instance.
 4.  **Connect via SSH:** The dashboard provides the exact SSH command to connect to your running VPS. The credentials are:
     -   **Username:** `vpsuser`
     -   **Password:** `password`
@@ -117,3 +100,8 @@ Once the application is running, regardless of your OS:
     ```bash
     ssh vpsuser@localhost -p 32768
     ```
+
+## Troubleshooting
+
+-   **500 Errors on Linux:** If you get a "500 Internal Server Error", it almost always means the backend container cannot communicate with the Docker socket. Double-check that you have completed **Step 1** correctly and have the right GID in your `docker-compose.yml` file.
+-   **`buildx` error:** If you try `docker compose up --build` and get an error about `buildx`, your Docker installation is missing the Buildx component. The provided `./build.sh` script is the recommended way to build the images.

@@ -55,6 +55,21 @@ function App() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to permanently delete this VPS?')) {
+      setIsLoading(true);
+      setError('');
+      try {
+        await axios.delete(`${API_BASE_URL}/vps/${id}`);
+        setTimeout(fetchVpsList, 1000); // Refresh list after deletion
+      } catch (err) {
+        console.error(`Error deleting VPS ${id}:`, err);
+        setError('Failed to delete VPS. Check backend logs for details.');
+        setIsLoading(false);
+      }
+    }
+  };
+
   const getSshPort = (vps) => {
     try {
       // Correctly access the port from the container inspect data
@@ -114,7 +129,8 @@ function App() {
                   <td className="text-center">
                     <button className="btn btn-success btn-sm me-2" onClick={() => handleAction(vps.Id, 'start')} disabled={isLoading || isRunning}>Start</button>
                     <button className="btn btn-warning btn-sm me-2" onClick={() => handleAction(vps.Id, 'stop')} disabled={isLoading || !isRunning}>Stop</button>
-                    <button className="btn btn-info btn-sm" onClick={() => handleAction(vps.Id, 'restart')} disabled={isLoading || !isRunning}>Restart</button>
+                    <button className="btn btn-info btn-sm me-2" onClick={() => handleAction(vps.Id, 'restart')} disabled={isLoading || !isRunning}>Restart</button>
+                    <button className="btn btn-danger btn-sm" onClick={() => handleDelete(vps.Id)} disabled={isLoading}>Delete</button>
                   </td>
                 </tr>
               )
