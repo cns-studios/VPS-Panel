@@ -2,7 +2,7 @@
 
 ![Dashboard Screenshot](https://i.imgur.com/9d4AVo9.png)
 
-A simple, self-hosted, web-based panel to manage virtual private servers (VPS) running in Docker containers. This project provides a user-friendly interface to create, manage, and connect to your containerized environments, inspired by the functionality of services like Hostinger.
+A simple, self-hosted, lightweight web-based panel to manage virtual private servers (VPS) running in Docker containers. This project provides a user-friendly interface to create, manage, and connect to your containerized environments, inspired by the functionality of services like Hostinger.
 
 ---
 

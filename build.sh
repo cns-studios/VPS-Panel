@@ -1,7 +1,4 @@
 #!/bin/bash
-#
-# This script simplifies the build process for the VPS Management Panel.
-# It builds the three required Docker images in the correct order.
 
 set -e # Exit immediately if a command exits with a non-zero status.
 
